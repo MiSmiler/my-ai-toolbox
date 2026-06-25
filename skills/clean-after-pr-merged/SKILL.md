@@ -1,9 +1,7 @@
 ---
 name: clean-after-pr-merged
-description: |
-  Clean up local worktree and branch after a PR is merged. This skill must be explicitly invoked via /clean-after-pr-merged.
-
-  It identifies the PR from conversation context or prompts the user to provide the PR number, verifies the PR is merged, then removes the associated worktree, local branch, and remote branch with user confirmation.
+description: Clean up local worktree and branch after a PR is merged. 
+disable-model-invocation: true
 ---
 
 # Clean After PR Merged
