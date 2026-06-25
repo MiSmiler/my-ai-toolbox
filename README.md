@@ -1,3 +1,3 @@
 # Toy Skills
 
-Just put some my self-used skills here.
+Just put some of my self-used skills here.
