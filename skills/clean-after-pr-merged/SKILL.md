@@ -98,10 +98,12 @@ git branch --show-current
 ```
 
 **If currently on the branch to be deleted:**
-- Check if `main` branch exists: `git show-ref --verify refs/heads/main`
-- If `main` exists, plan to switch to `main`
-- If `main` does not exist, ask the user: "No 'main' branch found. Which branch should I switch to before cleanup?"
-- Wait for user input and verify the branch exists before proceeding
+- Get the repository's default branch:
+  ```bash
+  gh repo view --json defaultBranchRef --jq .defaultBranchRef.name
+  ```
+- Plan to switch to this default branch
+- If the command fails (e.g., no remote access), ask the user: "Unable to determine default branch. Which branch should I switch to before cleanup?"
 
 ### Step 6: Show Confirmation and Request User Approval
 
@@ -126,7 +128,7 @@ Execute in this order:
 
 **7a. Switch to safe branch** (if currently on the branch to delete)
 ```bash
-git checkout <SAFE_BRANCH>  # main or user-specified
+git checkout <SAFE_BRANCH>  # default branch or user-specified
 ```
 
 **7b. Remove worktree** (if exists)
@@ -176,7 +178,7 @@ Currently on branch: <CURRENT_BRANCH>
 | PR not found | Report error, suggest checking PR number or repo access |
 | PR not merged | STOP immediately, report error |
 | Uncommitted changes in worktree | STOP immediately, report error with file list |
-| No 'main' branch | Ask user which branch to switch to |
+| Unable to determine default branch | Ask user which branch to switch to |
 | Worktree not found | Continue with branch cleanup only |
 | Local branch not found | Continue with remote cleanup only |
 | Remote branch already deleted | Treat as normal, report in final summary |
