@@ -34,7 +34,7 @@ This skill cleans up the local worktree and branches after a GitHub PR has been 
 **This is a required pre-check.** Before any further processing:
 
 ```bash
-gh pr view <PR_NUMBER> --json state,mergedAt,headRefName
+gh pr view <PR_NUMBER> --json state,mergedAt,headRefName,baseRefName
 ```
 
 Check that:
@@ -55,7 +55,8 @@ Check that:
 ### Step 3: Gather Cleanup Information
 
 From the PR data, extract:
-- **Branch name**: `headRefName` (e.g., `feature-xyz`)
+- **Branch name**: `headRefName` (e.g., `feature-xyz`) — the source branch to delete
+- **Base branch**: `baseRefName` (e.g., `main`) — the target branch the PR was merged into
 
 Check for associated worktree:
 
@@ -98,19 +99,15 @@ git branch --show-current
 ```
 
 **If currently on the branch to be deleted:**
-- Get the repository's default branch:
-  ```bash
-  gh repo view --json defaultBranchRef --jq .defaultBranchRef.name
-  ```
-- Plan to switch to this default branch
-- If the command fails (e.g., no remote access), ask the user: "Unable to determine default branch. Which branch should I switch to before cleanup?"
+- Use the PR's **base branch** (`baseRefName` from Step 2) as the safe branch — this is the branch the PR was merged into.
+- If `baseRefName` is already checked out in another worktree (you'll see this error in Step 7a: `'<baseRefName>' is already used by worktree at '<path>'`), you may skip the checkout step and proceed with worktree removal directly — the base branch is already the active branch in the main worktree.
 
 ### Step 6: Show Confirmation and Request User Approval
 
 Present what will be deleted and ask for confirmation:
 
 ```
-About to clean up for PR #<NUMBER> (branch: <BRANCH_NAME>):
+About to clean up for PR #<NUMBER> (merged into: <BASE_BRANCH>):
   - Worktree: <WORKTREE_PATH> (if exists)
   - Local branch: <BRANCH_NAME>
   - Remote branch: origin/<BRANCH_NAME>
@@ -128,13 +125,21 @@ Execute in this order:
 
 **7a. Switch to safe branch** (if currently on the branch to delete)
 ```bash
-git checkout <SAFE_BRANCH>  # default branch or user-specified
+git checkout <SAFE_BRANCH>  # baseRefName from Step 2
 ```
+If the checkout fails with `'<SAFE_BRANCH>' is already used by worktree at '<path>'`, this is expected — the base branch is already active in the main worktree. Skip this step and proceed to 7b.
 
 **7b. Remove worktree** (if exists)
+
+**Important:** You must run this command from a directory that is NOT the worktree being removed. If you are currently inside the worktree, `cd` to the main repository first:
 ```bash
-git worktree remove <WORKTREE_PATH>
+cd /path/to/main/repo
 ```
+Then remove the worktree:
+```bash
+git worktree remove <WORKTREE_PATH> --force
+```
+The `--force` flag is safe here because Step 4 already confirmed there are no uncommitted changes. It only bypasses the "branch is checked out" restriction — no data will be lost.
 
 **7c. Delete local branch**
 ```bash
@@ -178,7 +183,7 @@ Currently on branch: <CURRENT_BRANCH>
 | PR not found | Report error, suggest checking PR number or repo access |
 | PR not merged | STOP immediately, report error |
 | Uncommitted changes in worktree | STOP immediately, report error with file list |
-| Unable to determine default branch | Ask user which branch to switch to |
+| Unable to determine PR base branch | Ask user which branch to switch to |
 | Worktree not found | Continue with branch cleanup only |
 | Local branch not found | Continue with remote cleanup only |
 | Remote branch already deleted | Treat as normal, report in final summary |
@@ -191,3 +196,5 @@ Currently on branch: <CURRENT_BRANCH>
 - Always ask for user confirmation before deleting anything
 - Handle cases where some components are already deleted (idempotent behavior)
 - One PR per invocation only
+- The safe branch for switching is the PR's **base branch** (`baseRefName`), NOT the repository's default branch — the PR may have been merged into a non-default branch
+- `git worktree remove --force` is safe because Step 4 already verified no uncommitted changes exist. The `--force` only bypasses the "branch is checked out" restriction
