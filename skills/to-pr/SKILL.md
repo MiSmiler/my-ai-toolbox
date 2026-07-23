@@ -193,33 +193,25 @@ git remote show origin | grep "HEAD branch"
 
 ### Platform: body text with `gh` on Windows (Git Bash)
 
-**Do NOT use heredoc + pipe to pass `--body` to `gh`.** Git Bash on Windows routes pipes through temporary files and the pty emulation can close stdin before `gh` reads it, resulting in an empty body that overwrites the existing content:
+**Do NOT use `--body -` (stdin mode).** Git Bash on Windows routes pipes through a pty that can close stdin before `gh` reads it, resulting in an empty body:
 
 ```bash
-# ❌ BROKEN on Git Bash — reliably blanks the PR/issue body
+# ❌ BROKEN on Git Bash — stdin from heredoc / here-string
 cat <<'EOF' | gh pr edit 2 --body -
-...content...
-EOF
-
-# ❌ Same failure mode
 gh issue edit 4 --body - <<<"...content..."
 ```
 
-**Use one of these safe patterns instead:**
+**Always pass `--body` as a direct argument instead:**
 
 ```bash
-# ✅ Write to file, pass via command substitution
-gh pr edit 2 --body "$(cat path/to/body.md)"
-
-# ✅ Read from file via gh api (prefer relative paths — Git Bash's
-#    /tmp/ resolves to a different directory than Windows %TEMP%)
-gh api repos/<owner>/<repo>/pulls/2 --method PATCH -F body=@./body.md
-
-# ✅ Inline for short bodies (limits apply)
+# ✅ Short bodies — inline string
 gh pr create --title "..." --body "Short body text here"
+
+# ✅ Long / multi-line bodies — write to file, pass via command substitution
+gh pr edit 2 --body "$(cat path/to/body.md)"
 ```
 
-This applies to `gh pr create --body`, `gh pr edit --body`, `gh issue create --body`, and `gh issue edit --body` — all use the same `--body` / stdin mechanism.
+This applies to all `gh` commands that accept `--body`: `pr create`, `pr edit`, `issue create`, `issue edit`.
 
 ### Communication style
 
