@@ -68,7 +68,15 @@ For each potential issue, verify it exists:
 gh issue view 123 --json number,title,state 2>/dev/null
 ```
 
-#### 3. Determine linkage keywords
+#### 3. Ask for the language
+
+Before drafting the PR title and body, ask the user which language to use for the PR copy. Ask it as a single frontier question with a recommended default:
+
+- **Language** — the language of the PR title and body. Recommend English; the user may pick another (e.g., Chinese).
+
+The chosen language also governs the report and any proposed body edits in the Existing PR flow (Step 2B).
+
+#### 4. Determine linkage keywords
 
 Based on the change type, choose appropriate keywords:
 - **Bug fixes**: `fixes #N` or `fix #N`
@@ -78,7 +86,7 @@ Based on the change type, choose appropriate keywords:
 
 If commit messages already have keywords, preserve them. If they have bare issue numbers, add appropriate keywords based on change type.
 
-#### 4. Handle no issues found
+#### 5. Handle no issues found
 
 If no issues are found from any source:
 1. Report to user: "I didn't find any issue references in commits, branch name, or our conversation."
@@ -88,15 +96,29 @@ If no issues are found from any source:
    - User says "no" / "none" / "no issues" → Proceed without issue linkage
    - User doesn't respond after a reasonable wait → Proceed without issue linkage
 
-#### 5. Create the PR
+#### 6. Confirm the title and body
+
+Draft the PR title and body (in the chosen language), then show the complete title and body and ask to proceed (`y`) or abandon/edit (`n`).
+
+- `y` → Create the PR (step 7)
+- `n` → Let the user revise the title and/or body, or abandon the operation
+
+#### 7. Create the PR
 
 ```bash
 # Get default branch dynamically
 DEFAULT_BRANCH=$(git remote show origin | grep "HEAD branch" | sed 's/.*: //')
+```
+
+Write the body to a temp file, then create the PR:
+
+```bash
+BODY_FILE="$(mktemp)"
+# write the body into $BODY_FILE
 
 gh pr create \
   --title "<title>" \
-  --body "<description>" \
+  --body-file "$BODY_FILE" \
   --base "$DEFAULT_BRANCH"
 ```
 
@@ -109,28 +131,32 @@ The PR body should include:
 
 ### Step 2B: Existing PR Flow
 
-#### 1. Get PR details
+#### 1. Ask for the language
+
+Ask the user which language to use for the report and any proposed body edits. Recommend English; the user may pick another (e.g., Chinese).
+
+#### 2. Get PR details
 
 ```bash
 gh pr view --json number,title,body,headRefName,baseRefName,state
 ```
 
-#### 2. Extract referenced issues
+#### 3. Extract referenced issues
 
 Parse the PR body and title for:
 - `fixes #N`, `closes #N`, `resolves #N`, `relates to #N`
 - Bare `#N` references
 
-#### 3. Validate issues
+#### 4. Validate issues
 
 For each referenced issue, check if it exists and is open:
 ```bash
 gh issue view <number> --json number,title,state
 ```
 
-#### 4. Report findings
+#### 5. Report findings
 
-Provide a clear report:
+Provide a clear report (in the chosen language):
 
 ```
 PR #<number> Issue Linkage Report:
@@ -150,15 +176,22 @@ PR #<number> Issue Linkage Report:
   - Commit 'abc1234' mentions #222 but PR doesn't reference it
 ```
 
-#### 5. Suggest fixes
+#### 6. Suggest fixes
 
 If there are issues with the linkage:
 1. Show the current PR body
-2. Propose an updated PR body with proper linkage
-3. Ask if the user wants to update the PR
+2. Propose an updated PR body with proper linkage (in the chosen language)
+3. Ask if the user wants to update the PR — show the before/after and gate on `y`/`n`:
+   - `y` → Update the PR body
+   - `n` → Leave the PR as-is, or let the user revise the proposed body
+
+Write the proposed body to a temp file, then update the PR:
 
 ```bash
-gh pr edit <number> --body "<updated-body>"
+BODY_FILE="$(mktemp)"
+# write the proposed body into $BODY_FILE
+
+gh pr edit <number> --body-file "$BODY_FILE"
 ```
 
 ---
@@ -191,27 +224,9 @@ Always compare against the main branch (or the default branch):
 git remote show origin | grep "HEAD branch"
 ```
 
-### Platform: body text with `gh` on Windows (Git Bash)
+### Body text with `gh`
 
-**Do NOT use `--body -` (stdin mode).** Git Bash on Windows routes pipes through a pty that can close stdin before `gh` reads it, resulting in an empty body:
-
-```bash
-# ❌ BROKEN on Git Bash — stdin from heredoc / here-string
-cat <<'EOF' | gh pr edit 2 --body -
-gh issue edit 4 --body - <<<"...content..."
-```
-
-**Always pass `--body` as a direct argument instead:**
-
-```bash
-# ✅ Short bodies — inline string
-gh pr create --title "..." --body "Short body text here"
-
-# ✅ Long / multi-line bodies — write to file, pass via command substitution
-gh pr edit 2 --body "$(cat path/to/body.md)"
-```
-
-This applies to all `gh` commands that accept `--body`: `pr create`, `pr edit`, `issue create`, `issue edit`.
+Use `--body-file`, never `--body -`: `gh` reads the file directly, avoiding the stdin/pty pitfall on every platform.
 
 ### Communication style
 
