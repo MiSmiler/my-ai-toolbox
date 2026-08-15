@@ -45,13 +45,15 @@ Ask these two questions together, numbered, each with a recommended answer:
 
 Done when both are decided.
 
-### Step 4: Fill the template in rounds
+### Step 4: Fill the title and template in rounds
 
-Map the description into the template for the chosen type (see [Template](#template)). Then work the template as a frontier: in each round, ask only the sections still missing or ambiguous — all of them in one round, numbered, each with a proposed draft the reporter can accept or edit.
+Map the description into the title and the template sections for the chosen type (see [Template](#template)). Work them as a frontier: in each round, ask only the entries still missing or ambiguous — all of them in one round, numbered, each with a proposed draft the reporter can accept or edit. When the title appears in a round, number it first.
+
+Draft the title in the first round, from the reporter's description, alongside every template section. In later rounds, re-propose it only when the accepted sections no longer match it — their meaning changed, not just a cosmetic edit. Treat the title like any other section: the reporter may accept or edit it, and may stop early at any time.
 
 Keep the posture: propose descriptions of the problem, never fixes.
 
-Done when every required section carries text the reporter accepted and nothing is left ambiguous. The reporter may stop early at any time.
+Done when the title and every required section carry text the reporter accepted and nothing is left ambiguous. The reporter may stop early at any time.
 
 ### Step 5: Confirm the draft
 
