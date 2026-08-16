@@ -12,7 +12,7 @@ installed manually using one of the methods below.
 Copy (or symlink) the extension file into the auto-discovery directory:
 
 ```bash
-cp model-level-picker.ts ~/.pi/agent/extensions/
+cp level-picker.ts ~/.pi/agent/extensions/
 ```
 
 Then run `/reload` in pi to load it. The extension is now available in all
@@ -21,7 +21,7 @@ projects.
 To test a single extension without installing:
 
 ```bash
-pi -e ./model-level-picker.ts
+pi -e ./level-picker.ts
 ```
 
 ### Method 2: Configure in settings.json
@@ -34,7 +34,7 @@ Add the extension path to the `extensions` field of `settings.json`.
 ```json
 {
   "extensions": [
-    "/absolute/path/to/pi_extensions/model-level-picker.ts"
+    "/absolute/path/to/pi_extensions/level-picker.ts"
   ]
 }
 ```
@@ -49,7 +49,7 @@ Absolute paths and `~` are supported. Then run `/reload` in pi.
 
 | File | Description | Entry points |
 |------|-------------|--------------|
-| `model-level-picker.ts` | Select model + thinking level in the editor slot | `alt+l`, `/model-level` |
+| `level-picker.ts` | Select the current model's thinking level in the editor slot | `alt+l`, `/level` |
 | `write-guard.ts` | Confirm `write` tool calls before execution | auto |
 
 ### Why `alt+l` instead of `ctrl+shift+l`?
