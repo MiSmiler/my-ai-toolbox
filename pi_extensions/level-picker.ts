@@ -47,6 +47,8 @@ const ALL_THINKING_LEVELS: readonly ModelThinkingLevel[] = [
   "max",
 ];
 
+const PICKER_DESCRIPTION = "Select thinking level";
+
 /**
  * Inlined from `@earendil-works/pi-ai` (getSupportedThinkingLevels).
  *
@@ -71,7 +73,7 @@ function getSupportedThinkingLevels(model: Model<any>): ModelThinkingLevel[] {
 interface LevelPickerOptions {
   levels: ModelThinkingLevel[];
   initialIndex: number;
-  currentLevel: string;
+  currentLevel: ModelThinkingLevel;
   modelLabel: string;
   theme: Theme;
   terminalRows: number;
@@ -126,7 +128,7 @@ class LevelPicker implements Component {
 
     const contentWidth = Math.max(1, width);
     const border = (s: string) => theme.fg("border", s);
-    const rowOf = (s: string) => padContent(s, contentWidth);
+    const padRow = (s: string) => padContent(s, contentWidth);
 
     // Window the entries around the selection (mirrors the built-in selector).
     const maxVisible = Math.max(4, Math.min(12, Math.floor(this.opts.terminalRows * 0.4)));
@@ -138,27 +140,27 @@ class LevelPicker implements Component {
 
     const lines: string[] = [];
     lines.push(border("─".repeat(contentWidth)));
-    lines.push(rowOf(theme.fg("accent", theme.bold(` Thinking Level — ${modelLabel} `))));
+    lines.push(padRow(theme.fg("accent", theme.bold(` Thinking Level — ${modelLabel} `))));
 
     for (let i = start; i < end; i++) {
       const level = levels[i];
       const n = i + 1;
       const isSelected = i === this.selectedIdx;
-      const isCurrent = String(level) === currentLevel;
+      const isCurrent = level === currentLevel;
 
       const levelText = theme.fg(THINKING_COLORS[level], String(level));
       const text = isSelected
         ? theme.fg("accent", `> ${n}. `) + levelText
         : theme.fg("dim", `  ${n}. `) + levelText;
 
-      lines.push(rowOf(isCurrent ? text + theme.fg("success", " ✓") : text));
+      lines.push(padRow(isCurrent ? text + theme.fg("success", " ✓") : text));
     }
 
     if (start > 0 || end < levels.length) {
-      lines.push(rowOf(theme.fg("muted", `  (${this.selectedIdx + 1}/${levels.length})`)));
+      lines.push(padRow(theme.fg("muted", `  (${this.selectedIdx + 1}/${levels.length})`)));
     }
 
-    lines.push(rowOf(theme.fg("dim", " ↑↓ navigate • enter / 1-9 select • esc cancel")));
+    lines.push(padRow(theme.fg("dim", " ↑↓ navigate • enter / 1-9 select • esc cancel")));
     lines.push(border("─".repeat(contentWidth)));
 
     return lines;
@@ -185,13 +187,15 @@ async function openPicker(ctx: ExtensionContext, pi: ExtensionAPI): Promise<void
   }
 
   const levels = getSupportedThinkingLevels(model);
+  // Defensive: getSupportedThinkingLevels always returns at least ["off"],
+  // so this branch is currently unreachable.
   if (levels.length === 0) {
     ctx.ui.notify("No thinking levels available for this model", "warning");
     return;
   }
 
-  const currentLevel = String(ctx.thinkingLevel ?? "off");
-  const initialIndex = levels.findIndex((level) => String(level) === currentLevel);
+  const currentLevel = ctx.thinkingLevel ?? "off";
+  const initialIndex = levels.findIndex((level) => level === currentLevel);
 
   const selected = await ctx.ui.custom<ModelThinkingLevel | null>(
     (tui, theme, keybindings, done) => {
@@ -219,14 +223,14 @@ async function openPicker(ctx: ExtensionContext, pi: ExtensionAPI): Promise<void
 
 export default function levelPicker(pi: ExtensionAPI) {
   pi.registerShortcut("alt+l", {
-    description: "Select thinking level",
+    description: PICKER_DESCRIPTION,
     handler: async (ctx) => {
       await openPicker(ctx, pi);
     },
   });
 
   pi.registerCommand("level", {
-    description: "Select thinking level",
+    description: PICKER_DESCRIPTION,
     handler: async (_args, ctx) => {
       await openPicker(ctx, pi);
     },
