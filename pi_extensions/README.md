@@ -49,7 +49,7 @@ Absolute paths and `~` are supported. Then run `/reload` in pi.
 
 | File | Description | Entry points |
 |------|-------------|--------------|
-| `model-level-picker.ts` | Select model + thinking level in one panel | `alt+l`, `/model-level` |
+| `model-level-picker.ts` | Select model + thinking level in the editor slot | `alt+l`, `/model-level` |
 | `write-guard.ts` | Confirm `write` tool calls before execution | auto |
 
 ### Why `alt+l` instead of `ctrl+shift+l`?

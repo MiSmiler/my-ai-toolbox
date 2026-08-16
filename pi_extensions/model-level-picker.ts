@@ -1,7 +1,7 @@
 /**
  * Model + Thinking Level Picker
  *
- * Opens a panel (alt+l or `/model-level`) that lists every available
+ * Replaces the editor with a list (alt+l or `/model-level`) of every available
  * (model, thinking level) combination. Arrow keys or digits 1-9 select;
  * the chosen combination is applied session-scoped via `pi.setModel()` +
  * `pi.setThinkingLevel()`.
@@ -197,14 +197,12 @@ class ModelLevelPicker implements Component {
     const theme = this.opts.theme;
     const { rows, entries, currentKey, currentLevel } = this.opts;
 
-    const innerWidth = Math.max(10, width - 2);
-    const contentWidth = Math.max(1, innerWidth - 2);
+    const contentWidth = Math.max(1, width);
     const border = (s: string) => theme.fg("border", s);
-    const rowOf = (s: string) =>
-      border("│ ") + padContent(s, contentWidth) + border("│");
+    const rowOf = (s: string) => padContent(s, contentWidth);
 
     // Window the rows around the selection (mirrors the built-in selector).
-    const maxVisible = Math.max(4, Math.floor(this.opts.terminalRows * 0.6));
+    const maxVisible = Math.max(4, Math.min(12, Math.floor(this.opts.terminalRows * 0.4)));
     let selectedRowIndex = 0;
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -220,7 +218,7 @@ class ModelLevelPicker implements Component {
     const end = Math.min(start + maxVisible, rows.length);
 
     const lines: string[] = [];
-    lines.push(border("╭") + border("─".repeat(innerWidth)) + border("╮"));
+    lines.push(border("─".repeat(contentWidth)));
     lines.push(rowOf(theme.fg("accent", theme.bold(" Model + Thinking Level "))));
 
     for (let i = start; i < end; i++) {
@@ -249,7 +247,7 @@ class ModelLevelPicker implements Component {
     }
 
     lines.push(rowOf(theme.fg("dim", " ↑↓ navigate • enter / 1-9 select • esc cancel")));
-    lines.push(border("╰") + border("─".repeat(innerWidth)) + border("╯"));
+    lines.push(border("─".repeat(contentWidth)));
 
     return lines;
   }
@@ -301,7 +299,6 @@ async function openPicker(ctx: ExtensionContext, pi: ExtensionAPI): Promise<void
       picker.onCancel = () => done(null);
       return picker;
     },
-    { overlay: true, overlayOptions: { minWidth: 56, width: "60%", maxHeight: "70%" } },
   );
 
   if (!selected) return;
