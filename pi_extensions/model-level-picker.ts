@@ -49,8 +49,15 @@ const ALL_THINKING_LEVELS: readonly ModelThinkingLevel[] = [
   "max",
 ];
 
+/** Stable identity string for a model: `provider/id`. */
+function modelKey(model: Model<any>): string {
+  return `${model.provider}/${model.id}`;
+}
+
 /**
  * Inlined from `@earendil-works/pi-ai` (getSupportedThinkingLevels).
+ *
+ * NOTE: verbatim copy of pi-ai `dist/models.js` — verify on pi-ai upgrades.
  *
  * Keeping this locally avoids a runtime import of `@earendil-works/pi-ai`,
  * which pi's extension loader aliases to the heavy `dist/compat.js` legacy
@@ -92,7 +99,7 @@ interface PickerEntry {
 
 type PickerRow =
   | { kind: "header"; label: string }
-  | { kind: "entry"; entry: PickerEntry; entryIndex: number };
+  | { kind: "entry"; entryIndex: number };
 
 interface PickerData {
   rows: PickerRow[];
@@ -102,23 +109,23 @@ interface PickerData {
 /** Build the flat, header-grouped list of (model, level) options. */
 function buildPicker(ctx: ExtensionContext): PickerData {
   const scoped = ctx.scopedModels;
-  const base: Array<{ model: Model<any>; pinned?: ModelThinkingLevel }> =
+  const items: Array<{ model: Model<any>; pinned?: ModelThinkingLevel }> =
     scoped.length > 0
       ? scoped.map((s) => ({ model: s.model, pinned: s.thinkingLevel }))
       : ctx.modelRegistry.getAvailable().map((m) => ({ model: m }));
 
-  const providers = new Set(base.map((b) => b.model.provider));
+  const providers = new Set(items.map((b) => b.model.provider));
   const showProvider = providers.size > 1;
 
   const rows: PickerRow[] = [];
   const entries: PickerEntry[] = [];
   const seen = new Set<string>();
 
-  for (const item of base) {
+  for (const item of items) {
     const model = item.model;
-    const modelKey = `${model.provider}/${model.id}`;
-    if (seen.has(modelKey)) continue;
-    seen.add(modelKey);
+    const key = modelKey(model);
+    if (seen.has(key)) continue;
+    seen.add(key);
 
     const levels: ModelThinkingLevel[] = item.pinned
       ? [clampThinkingLevel(model, item.pinned)]
@@ -127,13 +134,13 @@ function buildPicker(ctx: ExtensionContext): PickerData {
 
     rows.push({
       kind: "header",
-      label: showProvider ? `${model.provider}/${model.id}` : model.id,
+      label: showProvider ? key : model.id,
     });
 
     for (const level of levels) {
       const entry: PickerEntry = { model, level };
       entries.push(entry);
-      rows.push({ kind: "entry", entry, entryIndex: entries.length - 1 });
+      rows.push({ kind: "entry", entryIndex: entries.length - 1 });
     }
   }
 
@@ -226,14 +233,14 @@ class ModelLevelPicker implements Component {
       if (row.kind === "header") {
         lines.push(rowOf(theme.fg("muted", row.label)));
       } else {
+        const entry = entries[row.entryIndex];
+        const { model, level } = entry;
         const n = row.entryIndex + 1;
         const isSelected = row.entryIndex === this.selectedIdx;
         const isCurrent =
-          currentKey !== undefined &&
-          `${row.entry.model.provider}/${row.entry.model.id}` === currentKey &&
-          String(row.entry.level) === currentLevel;
+          currentKey !== undefined && modelKey(model) === currentKey && String(level) === currentLevel;
 
-        const levelText = theme.fg(THINKING_COLORS[row.entry.level], String(row.entry.level));
+        const levelText = theme.fg(THINKING_COLORS[level], String(level));
         const text = isSelected
           ? theme.fg("accent", `> ${n}. `) + levelText
           : theme.fg("dim", `  ${n}. `) + levelText;
@@ -274,11 +281,10 @@ async function openPicker(ctx: ExtensionContext, pi: ExtensionAPI): Promise<void
 
   const current = ctx.model;
   const currentLevel = String(ctx.thinkingLevel ?? "off");
-  const currentKey = current ? `${current.provider}/${current.id}` : undefined;
+  const currentKey = current ? modelKey(current) : undefined;
   const initialIndex = currentKey
     ? entries.findIndex(
-        (e) =>
-          `${e.model.provider}/${e.model.id}` === currentKey && String(e.level) === currentLevel,
+        (e) => modelKey(e.model) === currentKey && String(e.level) === currentLevel,
       )
     : -1;
 
@@ -306,11 +312,11 @@ async function openPicker(ctx: ExtensionContext, pi: ExtensionAPI): Promise<void
   const { model, level } = selected;
   const ok = await pi.setModel(model);
   if (!ok) {
-    ctx.ui.notify(`No API key for ${model.provider}/${model.id}`, "error");
+    ctx.ui.notify(`No API key for ${modelKey(model)}`, "error");
     return;
   }
   pi.setThinkingLevel(level);
-  ctx.ui.notify(`Model: ${model.provider}/${model.id} • thinking: ${level}`, "info");
+  ctx.ui.notify(`Model: ${modelKey(model)} • thinking: ${level}`, "info");
 }
 
 export default function modelLevelPicker(pi: ExtensionAPI) {
