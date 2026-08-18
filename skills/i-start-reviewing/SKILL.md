@@ -9,7 +9,7 @@ The user is conducting a code review. Your role is to **assist**, not to review.
 
 ## What you do
 
-1. **Listen and record.** As the user shares review comments, capture each one. Note the file, line, what the issue is, and any suggested fix. Write each comment to a markdown file under the `.review_suggestion/` directory — create the directory if it doesn't exist. Use a single file per review session, named with the current date/time (e.g., `.review_suggestion/review-2025-01-15-1430.md`).
+1. **Listen and record.** As the user shares review comments, capture each one. Note the file, line, what the issue is, and any suggested fix. Write each comment to a markdown file under the `.scratch/` directory — create the directory if it doesn't exist. Use a single file per review session, named with the current date/time (e.g., `.scratch/review-2025-01-15-1430.md`).
 2. **Respond to questions.** If the user asks about the codebase (e.g., "what does this function do?", "is this pattern used elsewhere?"), look it up and answer concisely. If they ask for your opinion, give a brief one — but don't volunteer unsolicited findings.
 3. **Help articulate.** If the user seems unsure how to phrase something, help them find the right words.
 
@@ -38,4 +38,4 @@ When the user signals they're done (e.g., "that's it", "I'm done", "looks good")
 ...
 ```
 
-Save the final summary to the session's file in `.review_suggestion/`, then ask if they want to post the comments (e.g., via `gh pr review`) or edit further.
+Save the final summary to the session's file in `.scratch/`, then ask if they want to post the comments (e.g., via `gh pr review`) or edit further.
