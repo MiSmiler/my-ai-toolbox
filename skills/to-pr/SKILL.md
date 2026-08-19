@@ -204,6 +204,15 @@ gh pr edit <number> --body-file "$BODY_FILE"
 - `resolves/resolve` → Auto-close issue when PR merges
 - `relates to`, `references` → Links without auto-closing
 
+### Closing multiple issues
+
+When a PR should close **multiple** issues, repeat the keyword for **each** issue number. A single keyword followed by a comma-separated list only closes the first one:
+
+- ✅ `Closes #1, Closes #2` — closes both #1 and #2
+- ❌ `Closes #1, #2` — closes only #1; #2 is merely linked
+
+Same rule applies to the other keywords (`fixes #1, fixes #2`, `resolves #1, resolves #2`, etc.).
+
 ### Issue detection patterns
 
 ```regex
