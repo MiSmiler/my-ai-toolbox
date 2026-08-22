@@ -1,6 +1,6 @@
-# Rust preferences
+# Rust habits
 
-Personal, Rust-specific preferences on top of the community best-practice baseline.
+Personal, Rust-specific habits on top of the community best-practice baseline.
 
 ## Community baseline
 
@@ -12,4 +12,4 @@ Personal, Rust-specific preferences on top of the community best-practice baseli
 
 ## My notes
 
-No personal Rust-specific preferences recorded yet — rely on the baseline and `common.md`. Accumulate entries here.
+No personal Rust-specific habits recorded yet — rely on the baseline and `common.md`. Accumulate entries here.

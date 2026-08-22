@@ -1,6 +1,6 @@
-# Common preferences
+# Common habits
 
-Personal preferences that apply to every language, on top of the community best-practice baseline. Each entry is a check the review runs.
+Personal habits that apply to every language, on top of the community best-practice baseline. Each entry is a check the review runs.
 
 ## Naming
 
@@ -18,4 +18,4 @@ Personal preferences that apply to every language, on top of the community best-
 
 ## Extending this file
 
-Add a section here when a preference applies to all languages; put language-specific ones in `references/<lang>.md`. The review suggests candidates at the end of its report — the edits are always the user's.
+Add a section here when a habit applies to all languages; put language-specific ones in `references/<lang>.md`. The review suggests candidates at the end of its report — the edits are always the user's.

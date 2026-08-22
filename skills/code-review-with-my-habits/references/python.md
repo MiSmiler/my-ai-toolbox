@@ -1,6 +1,6 @@
-# Python preferences
+# Python habits
 
-Personal, Python-specific preferences on top of the community best-practice baseline.
+Personal, Python-specific habits on top of the community best-practice baseline.
 
 ## Community baseline
 
@@ -12,4 +12,4 @@ Personal, Python-specific preferences on top of the community best-practice base
 
 ## My notes
 
-No personal Python-specific preferences recorded yet — rely on the baseline and `common.md`. Accumulate entries here.
+No personal Python-specific habits recorded yet — rely on the baseline and `common.md`. Accumulate entries here.

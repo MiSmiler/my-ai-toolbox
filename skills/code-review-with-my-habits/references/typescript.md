@@ -1,6 +1,6 @@
-# TypeScript preferences
+# TypeScript habits
 
-Personal, TypeScript-specific preferences on top of the community best-practice baseline.
+Personal, TypeScript-specific habits on top of the community best-practice baseline.
 
 ## Community baseline
 
@@ -13,4 +13,4 @@ Personal, TypeScript-specific preferences on top of the community best-practice 
 
 ## My notes
 
-No personal TypeScript-specific preferences recorded yet — rely on the baseline and `common.md`. Accumulate entries here.
+No personal TypeScript-specific habits recorded yet — rely on the baseline and `common.md`. Accumulate entries here.
