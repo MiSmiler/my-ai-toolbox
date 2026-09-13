@@ -34,7 +34,7 @@ Some work is cut without a spec, the design living in the conversation. Then the
 
 </vertical-slice-rules>
 
-A **wide refactor** is the exception: one mechanical change whose blast radius fans across the codebase cannot land green as a slice. Sequence it expand–contract — add the new form beside the old, migrate the call sites in batches sized by blast radius, then delete the old form once no caller remains. Each step is its own ticket, with the same blocking edges as any other.
+A **wide refactor** is the exception: one mechanical change whose blast radius fans across the codebase cannot land green as a slice. Sequence it expand–contract — add the new form beside the old, migrate the call sites in batches sized by blast radius, then delete the old form once no caller remains. Each step is its own ticket, with the same blocking edges as any other. When even a batch cannot stay green on its own, keep the sequence but let the batches share an integration branch, and have them all block a final integrate-and-verify ticket: green is promised only there.
 
 Give every ticket its **blocking edges**: the tickets that must finish first. A ticket with no blockers can start immediately.
 
@@ -55,7 +55,7 @@ Iterate until the user approves.
 **Structure** follows the context:
 
 - Grilling started from an existing issue → that issue is the parent: `gh issue create --parent <n>`.
-- Otherwise → no parent. Tickets stand alone, held together by their `Spec:` line and their edges.
+- Otherwise → no parent. Tickets stand alone, held together by their `## Spec` section and their edges.
 
 **Edges** are native blocking, via `--blocked-by`. Publish blockers first, in dependency order, so every number a ticket references already exists. Any ticket whose blockers are all done is on the **frontier** and can be started.
 
@@ -66,24 +66,30 @@ Leave any parent issue open and untouched.
 <issue-template>
 
 ```markdown
-**What to build:** the end-to-end behaviour this ticket makes work, stated as behaviour.
+## What to build
 
-**Interface:** derived from `docs/specs/<feature-slug>.md` (authoritative; if they disagree, the spec wins).
+The end-to-end behaviour this ticket makes work, stated as behaviour.
 
-<the seams and signatures this ticket touches — its slice, not the whole contract>
+## Interface
 
-**Acceptance criteria:**
+The seams and signatures this ticket touches — its slice, not the whole contract. Derived from `docs/specs/<feature-slug>.md`, which is authoritative: where they disagree, the spec wins.
+
+## Acceptance criteria
 
 - [ ] <each one observable, and false at the commit the implementer starts from>
 
-**Blocked by:** <the blocking tickets, or "None (can start immediately)">
+## Blocked by
 
-**Spec:** `docs/specs/<feature-slug>.md`
+- <the blocking tickets, or "None (can start immediately)">
+
+## Spec
+
+`docs/specs/<feature-slug>.md`
 ```
 
 </issue-template>
 
-Include the `Spec:` line when a spec exists.
+Include the `## Spec` section when a spec exists.
 
 Anchor the body in behaviour and contract: the domain nouns `CONTEXT.md` defines, type shapes, signatures, invariants. The code holds the file paths and line numbers, and it moves under them.
 
