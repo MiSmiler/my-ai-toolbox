@@ -28,3 +28,9 @@ When communicating with me in Chinese, **preserve technical proper nouns in thei
 **Context sensitivity**: In technical discussions about APIs, frameworks, libraries, or specific programming constructs, always use the English originals. In purely general or non-technical descriptions where the term is used colloquially, Chinese translations may be acceptable — but lean toward English when there is any ambiguity.
 
 **No explanations needed**: Use the English terms directly. Do not add parenthetical Chinese explanations (e.g., just say "Socket" rather than "Socket（套接字）"). I will look up anything I don't understand on my own.
+
+# Markdown Formatting Guidelines
+
+Use **soft wrap** for every Markdown document I author — PR and issue bodies, docs, skills, and agent instruction files: each paragraph and each list item sits on one line, however long it runs. A new line starts only at a real paragraph break, a list item, or a code block.
+
+Soft wrap means the viewer folds long lines to the window width without inserting newline characters; hard wrap bakes the line breaks into the file. CommonMark turns a single newline inside a paragraph into a space, so a hard wrap only buys raw-view and diff noise — one edited word repaints the whole paragraph, and a renderer that reads newlines literally hard-breaks the text.
