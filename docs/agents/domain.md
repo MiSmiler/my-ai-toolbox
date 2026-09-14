@@ -5,10 +5,10 @@ How the workflow skills should consume this repo's domain documentation when exp
 ## Before exploring, read these
 
 - **`CONTEXT.md`** at the repo root, or
-- **`CONTEXT-MAP.md`** at the repo root if it exists: it points at one `CONTEXT.md` per context. Read each one relevant to the topic.
-- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- **`CONTEXT-MAP.md`** at the repo root if it exists — it points at one `CONTEXT.md` per context. Read each one relevant to the topic.
+- **`docs/adr/`** — read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
 
-When these files don't exist, proceed silently. Their absence is the normal starting state, not a gap to report. The `domain-modeling` skill (reached via `grill-with-docs`) creates them lazily, when a term or a decision is actually resolved.
+If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `domain-modeling` skill (reached via `grill-with-docs`) creates them lazily when terms or decisions actually get resolved.
 
 ## File structure
 
@@ -42,10 +42,10 @@ Multi-context repo (presence of `CONTEXT-MAP.md` at the root):
 
 When your output names a domain concept — in a spec, a seam, an interface, a ticket title, a test name — use the term as `CONTEXT.md` defines it. Drift to a synonym the glossary explicitly avoids is a finding.
 
-A concept you need that the glossary doesn't carry is a signal: either the project doesn't use that language (reconsider), or there is a real gap worth naming.
+If the concept you need isn't in the glossary yet, that's a signal — either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `domain-modeling`).
 
 ## Flag ADR conflicts
 
-When the design you are about to write contradicts a recorded decision, surface it rather than quietly overriding it:
+If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> _Contradicts ADR-0007 (event-sourced orders) — worth reopening because…_
+> _Contradicts ADR-0007 (event-sourced orders) — but worth reopening because…_

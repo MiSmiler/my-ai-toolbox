@@ -15,11 +15,13 @@ The workflow's other two needs are not configured here. Tickets go to GitHub thr
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
+Where a choice goes to the user, lead with the recommended answer so they can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip the choice entirely when exploration already settled it.
+
 ## 1. Explore
 
 Read what is there; assume nothing:
 
-- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist, and does it already carry an `## Agent skills` section?
+- `AGENTS.md` at the repo root: does it exist, and does it already carry an `## Agent skills` section?
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
 - `docs/adr/`, and any `src/*/docs/adr/` directories
 - `docs/agents/`: a prior run of this skill, or of a different skill set
@@ -76,11 +78,8 @@ Let them edit before writing.
 
 Pick the file to edit:
 
-- `CLAUDE.md` exists → edit it.
-- Otherwise `AGENTS.md` exists → edit it.
-- Neither exists → ask the user which to create.
-
-Never create one of the two when the other already exists.
+- `AGENTS.md` exists → edit it.
+- Otherwise → create it.
 
 If an `## Agent skills` block is already there, update it in place rather than appending a duplicate, and leave the surrounding sections untouched. Drop a `### Triage labels` sub-block and a `### Issue tracker` sub-block when either is present: this workflow writes neither.
 

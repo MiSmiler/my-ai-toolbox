@@ -41,7 +41,6 @@ pi loads skills from the `skills` arrays in both settings files and from a set o
 2. `~/.pi/agent/settings.json` — its `skills` paths, resolved relative to `~/.pi/agent`.
 3. This project's skill directories, nearest first: `.pi/skills/`, then `.agents/skills/` in the working directory and each ancestor up to the git root, plus a `skills/` directory or a `pi.skills` entry named in this repo's `package.json`.
 4. Global skill directories: `~/.pi/agent/skills/`, `~/.agents/skills/`.
-5. Other harness directories declared in either `settings.json` (`~/.claude/skills`, `~/.codex/skills`, …).
 
 Declared paths come first because that is where the harness actually loads from; the conventional directories are what is left when nothing is declared. A declared path pointing at a shared checkout while this repo's own skills come from a different array is exactly the split that hides a missing dependency.
 
