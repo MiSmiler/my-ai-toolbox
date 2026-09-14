@@ -13,6 +13,7 @@ Discovered from `skills/` in this repo, or from whatever this repo's `settings.j
 | `to-designed-tickets` | Cuts the confirmed design into vertical slices on GitHub. |
 | `implement-designed` | Builds a spec or a ticket. |
 | `code-review-designed` | The two-axis review of the diff. |
+| `simple-subagent` | The isolated `pi` run a brief goes to — `code-review-designed` dispatches both axes through it, and the borrowed `grilling` and `codebase-design` reach it for exploration and design alternatives. |
 
 ## Borrowed: must be present
 

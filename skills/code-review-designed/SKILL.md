@@ -10,7 +10,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 - **Standards** — does the code conform to this repo's documented standards?
 - **Spec** — does the code do what the spec asked for, seams and interfaces included?
 
-Each axis runs in its own `pi` subprocess. Isolation is the point: neither axis sees the other's reasoning, so a clean Standards pass cannot quietly raise the bar the Spec pass is judged against. Parallelism is only a speed question, so run them one after the other unless you have a reason to background them.
+Each axis is dispatched as its own `simple-subagent` process. Isolation is the point: neither axis sees the other's reasoning, so a clean Standards pass cannot quietly raise the bar the Spec pass is judged against. Parallelism is only a speed question, so run them one after the other.
 
 ## 1. Pin the fixed point
 
@@ -63,16 +63,7 @@ Each reads *what it is* → *how to fix*:
 
 ## 4. Dispatch the two axes
 
-Write each brief to a temp file, then run it in its own subprocess. `--no-session` keeps the run out of session storage; `--tools read,bash` keeps a reviewer from editing; `--no-skills` keeps a review subprocess from discovering this skill and fanning out into more of them.
-
-```bash
-BRIEF="$(mktemp)"
-cat > "$BRIEF" <<'EOF'
-<the axis brief>
-EOF
-
-pi -p --no-session --no-skills --tools read,bash "$(cat "$BRIEF")"
-```
+Dispatch each axis through the `simple-subagent` skill, one after the other. The axis content below is what goes into its brief.
 
 **Standards brief.** Carry the diff command, the commit list, the standards files from step 3, and the twelve smells above pasted in full — the subprocess has no other access to them.
 
@@ -92,7 +83,7 @@ pi -p --no-session --no-skills --tools read,bash "$(cat "$BRIEF")"
 
 When there is no spec, skip this dispatch and note the gap in the report.
 
-**Done when:** each axis that was dispatched has returned its report.
+**Done when:** each dispatched axis has handed back its report, or its failure. A failed axis is reported as a failed axis; the gap is the finding.
 
 ## 5. Aggregate
 
