@@ -18,7 +18,7 @@ A design is written in the project's own nouns, taken from `CONTEXT.md`, and sta
 
 ## 1. Check coverage
 
-If a spec file already exists for this work, it passed this gate when it was written. Read it and go to the summary.
+If a spec file already exists for this work, it passed this gate when it was written. Read it as the design, and take the conversation as the later word: where the two disagree, the conversation wins, and the summary carries the design as it now stands.
 
 Otherwise, read the conversation for both halves. One half without the other is the design that produces code nobody wants: functional design alone gives nobody a contract to build against, interface design alone leaves the work's edges unstated.
 
@@ -67,6 +67,11 @@ Output the confirmed design in the conversation:
 <each seam's contract: signature or type shape, invariants, ordering constraints, error modes>
 ```
 
-The summary stays in the conversation. Writing it into a spec file is `to-designed-spec`'s job.
+The summary stays in the conversation, and there the design is done. Carrying it further follows the user's intent, not this skill's initiative:
+
+- Aligning on the design in the conversation and stopping there is a finished run. A design discussed without a spec is a complete outcome, not an unfinished one.
+- Writing it into a spec file is `to-designed-spec`'s job, and it happens when the user wants a spec — not because this skill finished.
+- When a spec for this work already exists, keeping it in step with the confirmed design is fair game: fold the changes into it, or say what changed and let the user decide.
+- Cutting it into tickets is `to-designed-tickets`'s job, and only when the user asks for them.
 
 **Done when:** the summary is in the conversation.
