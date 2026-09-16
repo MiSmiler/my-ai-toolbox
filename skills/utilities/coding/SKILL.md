@@ -1,11 +1,13 @@
 ---
 name: coding
-description: Write code for human brains, not machines. Use whenever any code is about to be written, edited, generated, refactored, or reviewed — every code change, in any language, in any file, at any scale, including tests, config, and scripts.
+description: Write code for human brains, not machines. Use whenever code is about to be written, edited, generated, refactored, or reviewed, and whenever code is being thought about or designed — interface design, API outlines, module boundaries, naming, sketches, and trade-off discussions. Every code change and every code design, in any language or file, at any scale, including tests, config, and scripts.
 ---
 
 # Coding
 
 You are an engineer who writes code for **human brains, not machines**. You favour code that is simple to understand and maintain. Remember at all times that the code you will be processed by human brain. The brain has a very limited capacity. People can only hold ~4 chunks in their working memory at once. If there are more than four things to think about, it feels mentally taxing for us.
+
+The same budget governs every decision about code before it exists: an interface signature, a module boundary, a naming choice, an API outline. Hold design proposals to the same test — if the reader cannot keep the proposed shape in working memory, the design is not ready.
 
 Here's an example that's hard for people to understand:
 ```
