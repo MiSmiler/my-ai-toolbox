@@ -17,10 +17,11 @@ The skills a piece of designed work moves through, in order.
 - **[implement-designed](./skills/workflow/implement-designed/SKILL.md)** — Builds a spec's or a ticket's work at the seams the design agreed. *(from `/implement`)*
 - **[code-review-designed](./skills/workflow/code-review-designed/SKILL.md)** — Reviews the diff since a fixed point on two axes, Standards and Spec, reported side by side rather than merged. *(from `/code-review`)*
 
-## Supporting skills
+## Utilities skills
 
 Off the chain — reach for them on their own.
 
+- **[coding](./skills/utilities/coding/SKILL.md)** — The rules for code a human brain can hold; it fires on every code change, in any language or file. Adapted from [cognitive-load](https://github.com/zakirullin/cognitive-load/blob/main/README.agents.md) by Artem Zakirullin (CC BY 4.0).
 - **[simple-subagent](./skills/utilities/simple-subagent/SKILL.md)** — Runs a brief in an isolated `pi` subprocess and hands the report back word for word; it researches, never implements.
 - **[report-issues](./skills/utilities/report-issues/SKILL.md)** — Interviews you to sharpen a problem into a well-formed GitHub issue, then files it; it never proposes a fix.
 - **[to-pr](./skills/utilities/to-pr/SKILL.md)** — Creates the PR for the current branch with its issue linkage, or audits the linkage of a PR that already exists.
