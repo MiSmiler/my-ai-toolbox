@@ -57,7 +57,10 @@ Done when the title and every required section carry text the reporter accepted 
 
 ### Step 5: Confirm the draft
 
-Show the complete title and body and ask to proceed (`y`) or abandon (`n`).
+Step 4 leaves every section accepted and its full text on screen, so the issue is printed a second time only when the last round accepted text that never appeared on screen.
+
+- **Nothing changed in the last round** — every accepted entry was printed as drafted, so the screen already holds the issue as it will be created. Skip the presentation; the acceptance just given is the gate. Go to Step 6.
+- **The last round accepted an edit** — the edit was accepted without being printed back, so no single view of the accepted whole exists. Show the complete title and body and ask to proceed (`y`) or abandon (`n`).
 
 ### Step 6: Create the issue
 
