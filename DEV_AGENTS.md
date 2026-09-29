@@ -1,8 +1,14 @@
 ## Development habits
 
+### Apply the `coding` skill
+
+The `coding` skill governs every code decision in this repo — an interface design, a module boundary, a naming choice, and a trade-off proposal as much as the code that lands. Read it before proposing a design and before writing or editing code, in any language or file.
+
 ### Design before code
 
-Rounds of discussion converging is not the design being settled. Both halves — functional design and interface design — are aligned with the user first, and only then does implementation open; a few rounds is the expected cost, not a delay to be cut short. The answer to "is the design settled?" is *not yet*, so stay in the design rather than drifting toward an edit.
+Rounds of discussion converging is not the design being settled. Both halves — functional design and interface design — are aligned with the user first, and only then does implementation open; a few rounds is the expected cost, not a delay to be cut short.
+
+So when a design discussion has run and you see yourself edging toward the code, stop: the design is not settled until both halves are closed with the user, and no edit lands before that. Treat the pull toward editing as the signal that the design is *not yet* done — stay in the design rather than drifting toward an edit.
 
 ### Before touching files: present first, then confirm
 
@@ -28,9 +34,3 @@ Treat the index as the user's to manage: **never stage or unstage on your own**.
 ### Before committing
 
 Before executing `git commit`, **show the proposed commit message and wait for confirmation**. Use Conventional Commits format (`feat:`, `fix:`, `docs:`, `chore:`, etc.).
-
-## Agent skills
-
-### Domain docs
-
-Single-context layout — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
