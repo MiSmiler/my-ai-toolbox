@@ -12,14 +12,14 @@ Hand the current code repo a **Tickets Repo** and the two marks that make it fin
 
 Two rules hold across the whole run:
 
-- Every step that changes something says what it is about to do and waits for a yes. Reading — listing branches, inspecting files — needs no confirmation.
+- Every step that changes something says what it is about to do and waits for a yes. Reading inside the tickets repo and this code repo — listing branches, inspecting files — needs no confirmation.
 - A check that fails is a report, not an exit. The run pauses, the user decides, and it resumes once they have.
 
 `<tickets repo>` is the absolute path from step 1; `<code repo>` is this code repo's absolute path. Both are never written relative: `-C` moves the working directory first, so a relative path beside it resolves against the tickets repo. `dev/<code repo>` is the only branch this code repo ever uses — the last segment of that path; the tickets repo's other `dev/*` branches belong to other code repos.
 
 ## 1. Take the tickets repo
 
-Ask for the absolute path of the tickets repo — the single one shared across this machine's code repos. Confirm it is a git repo:
+Ask the user for the tickets repo's absolute path and wait for their answer. The path comes from them, in conversation — reaching it is asking, never searching the machine. Confirm it is a git repo:
 
 ```sh
 git -C <tickets repo> rev-parse --show-toplevel
