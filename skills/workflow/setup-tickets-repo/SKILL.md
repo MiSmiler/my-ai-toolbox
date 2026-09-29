@@ -15,7 +15,7 @@ Two rules hold across the whole run:
 - Every step that changes something says what it is about to do and waits for a yes. Reading — listing branches, inspecting files — needs no confirmation.
 - A check that fails is a report, not an exit. The run pauses, the user decides, and it resumes once they have.
 
-`<tickets repo>` below is the path from step 1. `<code repo>` is the name this code repo goes by in branch names — its directory name, unless the user picks another at step 4.
+`<tickets repo>` is the absolute path from step 1; `<code repo>` is this code repo's absolute path. Both are never written relative: `-C` moves the working directory first, so a relative path beside it resolves against the tickets repo. `dev/<code repo>` is the only branch this code repo ever uses — the last segment of that path; the tickets repo's other `dev/*` branches belong to other code repos.
 
 ## 1. Take the tickets repo
 
@@ -37,7 +37,7 @@ Announce and confirm, then:
 git -C <tickets repo> fetch --all --prune
 ```
 
-Pruning is not cosmetic: without it, branches deleted on the shared remote linger as `origin/*` and step 3 reads them as real.
+Pruning is not cosmetic: without it, branches deleted on the shared remote linger as `origin/*` and Explore reads them as real.
 
 Offline or missing credentials are reported, and the run waits — every reading below trusts remote-tracking refs.
 
@@ -45,7 +45,7 @@ Offline or missing credentials are reported, and the run waits — every reading
 
 ## 3. Explore
 
-Read-only, so nothing to confirm. Four readings feed step 4.
+Read-only, so nothing to confirm. Three readings feed Setup the worktree.
 
 **What `.tickets/` is** — one of five:
 
@@ -57,7 +57,7 @@ Read-only, so nothing to confirm. Four readings feed step 4.
 | not a git repo | conflict |
 | absent, a prunable worktree still naming this path | fresh, prunable |
 
-`git -C <tickets repo> worktree list --porcelain` lists every worktree of the tickets repo, marking a prunable one on a `prunable` line with its reason. One naming `<code repo>/.tickets` is what step 4 prunes.
+`git -C <tickets repo> worktree list --porcelain` lists every worktree of the tickets repo, marking a prunable one on a `prunable` line with its reason. One naming `<code repo>/.tickets` is what Setup the worktree prunes.
 
 **The two alignments** — each reads as *ahead behind*:
 
@@ -66,15 +66,37 @@ git -C <tickets repo> rev-list --left-right --count main...origin/main
 git -C <tickets repo> rev-list --left-right --count dev/<code repo>...origin/dev/<code repo>
 ```
 
-`0 0` is aligned. A branch missing on one side, a count that is not `0 0`, and a failed lookup are all unaligned.
+`0 0` is aligned. A branch that exists on both sides with a count other than `0 0` is unaligned, and so is one that exists on only one side. A branch that exists on neither side is not an alignment at all — it is the fresh path in Setup the worktree.
 
-**The branches** — every branch, local and remote-tracking, with the ones another worktree holds marked: `dev/haha (used by D:/proj/other/.tickets)`.
+**The branches** — every branch, local and remote-tracking, with the ones another worktree holds marked: `dev/haha (used by D:/proj/other/.tickets)`. The other `dev/*` branches are reported for awareness only.
 
-**The two pointers** — does `.gitignore` carry `/.tickets/` in any form? Does `AGENTS.md` carry `## About tickets repo`?
+**Done when:** the state is one of the five, each alignment has an answer, and every branch is known with its holder if any.
 
-**Done when:** the state is one of the five, each alignment has an answer, every branch is known with its holder if any, and each pointer is known present or missing.
+## 4. Setup the code repo
 
-## 4. Act
+Compare each pointer against the text below, verbatim:
+
+- `.gitignore` — does it carry `/.tickets/`?
+- `AGENTS.md` — does it carry the `## About tickets repo` section?
+
+Announce the outcome and take one yes. A pointer already carrying the text verbatim is left alone; one that mismatches is reported with its diff, and the user decides whether to overwrite it.
+
+- Append `/.tickets/` to `.gitignore`, creating the file when absent.
+- Append this to the end of `AGENTS.md`, creating the file when absent:
+
+```md
+## About tickets repo
+
+Tickets live in `.tickets/` — a git repo of its own inside this working tree. A ticket change is a commit in that repo, never in this one. Nothing in this repo cites it — no comment, doc comment, test name, error message or ADR.
+
+It is a worktree of the tickets repo: teardown belongs there.
+
+`.tickets/README.md` is the rulebook for that repo — read it before touching anything there.
+```
+
+**Done when:** each pointer either carries the prescribed text verbatim, or the user declined the overwrite and it keeps what it had.
+
+## 5. Setup the worktree
 
 **Unaligned** — report and wait. Setting it right is the user's move; the run resumes once both counts read `0 0`. Which side is which decides the wording:
 
@@ -92,8 +114,7 @@ Branches another worktree holds are not on offer — taking one fails. They appe
 **Fresh** — build the Tickets Repo. The branch decides the shape:
 
 - `dev/<code repo>` aligned on both sides → take it: `git -C <tickets repo> worktree add <code repo>/.tickets dev/<code repo>`
-- the user chose to create it → `git -C <tickets repo> worktree add -b dev/<code repo> <code repo>/.tickets main`
-- the user chose another branch → `-b <branch>` when only its remote side exists, naming it bare when the local branch is already there
+- `dev/<code repo>` exists on neither side → this is the first setup for this code repo. Report that and wait; on a yes, create it: `git -C <tickets repo> worktree add -b dev/<code repo> <code repo>/.tickets main`
 
 A prunable worktree naming this path blocks the build — `fatal: '<code repo>/.tickets' is a missing but already registered worktree`. Clear it first:
 
@@ -101,29 +122,12 @@ A prunable worktree naming this path blocks the build — `fatal: '<code repo>/.
 git -C <tickets repo> worktree prune
 ```
 
-That is a write, so it takes its own yes. Announce the build, confirm, and run.
+That is a write, so it takes its own yes — and it prunes every prunable worktree of the tickets repo, not only this one, so the announcement says so.
 
-A `.tickets/README.md` still missing afterwards means the base branch carries no rulebook — report that, since step 5 promises one.
+Announce the build, confirm, and run.
 
-**Repair** — `.tickets/` already stands as this tickets repo's worktree. Audit and report what is missing: a pointer, or the branch it sits on. Announce only the missing pieces, confirm, and touch only those.
+A `.tickets/README.md` still missing afterwards means the base branch carries no rulebook — report that, since Setup the code repo promises one.
 
-**Done when:** `git -C .tickets rev-parse --show-toplevel` prints the `.tickets/` directory itself, and `git -C .tickets branch --show-current` prints the agreed branch.
+**Repair** — `.tickets/` already stands as this tickets repo's worktree. Report the branch it sits on, and any mismatch with `dev/<code repo>`. Announce only what needs touching, confirm, and touch only that.
 
-## 5. Point
-
-Announce both and take one yes:
-
-- Append `/.tickets/` to `.gitignore`, creating the file when absent — unless step 3 found it already covered.
-- Append this to the end of `AGENTS.md`, creating the file when absent:
-
-```md
-## About tickets repo
-
-Tickets live in `.tickets/` — a git repo of its own inside this working tree. A ticket change is a commit in that repo, never in this one. Nothing in this repo cites it — no comment, doc comment, test name, error message or ADR.
-
-It is a worktree of the tickets repo: teardown belongs there.
-
-`.tickets/README.md` is the rulebook for that repo — read it before touching anything there.
-```
-
-**Done when:** both files carry their addition.
+**Done when:** `git -C <code repo>/.tickets rev-parse --show-toplevel` prints the `.tickets/` directory itself, and `git -C <code repo>/.tickets branch --show-current` prints `dev/<code repo>`.
