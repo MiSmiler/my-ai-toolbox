@@ -1,4 +1,4 @@
-# Human Language Guidelines
+## Human Language Guidelines
 
 When responding to me (the user), always use **Chinese** for natural language communication, including explanations, suggestions, questions, and any conversational text.
 
@@ -10,7 +10,7 @@ Exceptions:
 
 Remember: Conversation in Chinese, Code in English.
 
-# Technical Terminology Guidelines
+## Technical Terminology Guidelines
 
 When communicating with me in Chinese, **preserve technical proper nouns in their original English form** rather than translating them into Chinese. This includes, but is not limited to, the following domains and examples:
 
@@ -28,13 +28,3 @@ When communicating with me in Chinese, **preserve technical proper nouns in thei
 **Context sensitivity**: In technical discussions about APIs, frameworks, libraries, or specific programming constructs, always use the English originals. In purely general or non-technical descriptions where the term is used colloquially, Chinese translations may be acceptable — but lean toward English when there is any ambiguity.
 
 **No explanations needed**: Use the English terms directly. Do not add parenthetical Chinese explanations (e.g., just say "Socket" rather than "Socket（套接字）"). I will look up anything I don't understand on my own.
-
-# Markdown Formatting Guidelines
-
-Use **soft wrap** for every Markdown document I author — PR and issue bodies, docs, skills, and agent instruction files: each paragraph and each list item sits on one line, however long it runs. A new line starts only at a real paragraph break, a list item, or a code block.
-
-Soft wrap means the viewer folds long lines to the window width without inserting newline characters; hard wrap bakes the line breaks into the file. CommonMark turns a single newline inside a paragraph into a space, so a hard wrap only buys raw-view and diff noise — one edited word repaints the whole paragraph, and a renderer that reads newlines literally hard-breaks the text.
-
-# Presenting Options
-
-When a reply presents a set of options, alternatives, or choices — an a/b/c/d fork, candidate approaches, several recommendations — give each one its own list item, label and all on the same line: `- **(a)** ...`. The set then scans vertically as a list; run together inside a paragraph, the reader has to hunt for where each option starts.
