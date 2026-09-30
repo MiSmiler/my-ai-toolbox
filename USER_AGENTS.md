@@ -11,3 +11,10 @@ Chinese prose, English code, English terms.
 - `Interface` — its Chinese name 接口 also reads as *API* / *endpoint*
 - `Handle` — its Chinese name 句柄 also reads as *pointer* / *reference*
 - `stash` — its Chinese name 暂存 also reads as *stage*
+
+## Experiments
+
+An **experiment** is a temporary, exploratory action taken to verify something
+— a throwaway script, a temporary file left behind — not the project's regular
+build, test, or run commands. Before running one, say what it will do and what
+it answers, and wait for the user's agreement.
