@@ -27,6 +27,10 @@ asked:
   - Present interface design as **code in a fenced code block** — read the
     shape as code, not as prose or bulleted markdown.
 
+### Label options with ASCII
+
+When listing options, alternatives, or steps in conversation, label them with ASCII — `a`, `b`, `c` or `1`, `2`, `3` — not ① ② or 甲乙丙丁.
+
 ### Git staging
 
 Treat the index as the user's to manage: **never stage or unstage on your own**. Both `git add` (moving work into the index) and `git reset` / `git restore --staged` (moving work back out of it) change what the user has committed there, so either one needs the user's explicit consent *before* you run it. If you believe a staging change is genuinely necessary mid-round, **ask first**; do not run it unprompted.
