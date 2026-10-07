@@ -18,9 +18,9 @@ The tickets repo already exists and belongs to the user; it is shared by several
 
 ```
 1  check ticket repo
-2  check code repo
-3  build code repo
-4  build ticket repo
+2  build ticket repo
+3  check code repo
+4  build code repo
 5  confirm
 ```
 
@@ -78,7 +78,18 @@ A `dev/<code repo>` that exists but no longer sits on `main`'s tip can be offere
 
 **Done when:** the readings are in hand, and every decision they raised has been put to the user and answered.
 
-## 2. check code repo
+## 2. build ticket repo
+
+Carry out the decisions step 1 left, touching nothing else. Depending on them, this is some of:
+
+- create the worktree: `git -C <tickets repo> worktree add <code repo>/.tickets dev/<code repo>`, or, for a new branch, `git -C <tickets repo> worktree add -b dev/<code repo> <code repo>/.tickets main`
+- check out `dev/<code repo>` in a `.tickets/` that stands on another branch
+- prune a prunable worktree naming the path: `git -C <tickets repo> worktree prune`
+- fast-forward, rebase, or push, as the user agreed
+
+**Done when:** `git -C <code repo>/.tickets rev-parse --show-toplevel` prints the `.tickets/` directory itself and `git -C <code repo>/.tickets branch --show-current` prints `dev/<code repo>` — or the user declined, and `.tickets/` was left as it was.
+
+## 3. check code repo
 
 Read two files, and compare each against the text below, verbatim:
 
@@ -107,22 +118,11 @@ It is a worktree of the tickets repo: teardown belongs there.
 
 **Done when:** both files have been read, and each state has been put to the user and answered.
 
-## 3. build code repo
+## 4. build code repo
 
 Write what the user agreed to write, and nothing else. Create either file when it is absent. A file the user declined keeps what it had.
 
 **Done when:** every agreed entry is in place, or the user declined both and the files are untouched.
-
-## 4. build ticket repo
-
-Carry out the decisions step 1 left, touching nothing else. Depending on them, this is some of:
-
-- create the worktree: `git -C <tickets repo> worktree add <code repo>/.tickets dev/<code repo>`, or, for a new branch, `git -C <tickets repo> worktree add -b dev/<code repo> <code repo>/.tickets main`
-- check out `dev/<code repo>` in a `.tickets/` that stands on another branch
-- prune a prunable worktree naming the path: `git -C <tickets repo> worktree prune`
-- fast-forward, rebase, or push, as the user agreed
-
-**Done when:** `git -C <code repo>/.tickets rev-parse --show-toplevel` prints the `.tickets/` directory itself and `git -C <code repo>/.tickets branch --show-current` prints `dev/<code repo>` — or the user declined, and `.tickets/` was left as it was.
 
 ## 5. confirm
 
