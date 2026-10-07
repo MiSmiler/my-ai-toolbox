@@ -24,11 +24,13 @@ The tickets repo already exists and belongs to the user; it is shared by several
 5  confirm
 ```
 
-Two rules hold across all five.
+Three rules hold across all five.
 
-**The user decides; this run executes.** Every change is a decision point: lay out the situation, propose the move, ask, and act only on a yes. A no is an answer — the run continues without it. Reading needs no permission.
+**One step at a time.** A step ends the moment its report is on screen — one step per turn. Do the work, report it, stop; the user answers or acknowledges, and the next step starts only then. Read-only steps wait their turn like the rest.
 
-**A bad reading is a report, not an exit.** When something is off — no `dev/<code repo>`, a `main` out of step, a `.tickets/` belonging to some other repo — say so, propose how to handle it, and let the user decide whether the run goes on. Nothing is settled by default.
+**The user decides; this run executes.** Every change is a decision point: lay out the situation, propose the move, ask, and act on the yes. Only changes ask; reading needs no permission.
+
+**A bad reading is a report, not an exit.** When something is off — no `dev/<code repo>`, a `main` out of step, a `.tickets/` belonging to some other repo — say so, propose how to handle it, and let the user decide whether the run goes on.
 
 Report each step in two parts: the situation, as a short list of points; then, under its own heading, the decisions waiting on the user, each with the move proposed. When nothing needs deciding, the situation alone.
 
