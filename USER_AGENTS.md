@@ -4,7 +4,12 @@ Chinese prose, English code, English terms.
 
 **Prose** — Chinese.
 
-**Code** — English: identifiers, comments, docstrings, string literals, error messages, logs. Exception: user-facing text that must be Chinese.
+**Code** — English: identifiers, comments, docstrings, string literals, error
+messages, logs. Exception: only copy the product's end user reads on screen;
+comments, docstrings, error messages, and logs are never that.
+
+After writing code, check every identifier, comment, docstring, string,
+error message, and log you added is English.
 
 **Terms** — In Chinese prose, use the English term; it is the unique, searchable name for the concept. Reach for the Chinese name only when it has no collision. These do — always English:
 - `trait` — its Chinese name 特征 also reads as *feature*
