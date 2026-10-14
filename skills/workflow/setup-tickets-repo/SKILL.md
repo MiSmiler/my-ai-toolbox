@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Setup Tickets Repo
 
-Give this code repo a `.tickets/` worktree of the shared tickets repo, plus the two entries in this repo that make it findable.
+Give this code repo a `.tickets/` worktree of the shared tickets repo, plus the `.gitignore` entry that keeps it out of this repo.
 
 The tickets repo already exists and belongs to the user; it is shared by several code repos on this machine. Its path comes from the user, in conversation — never search the machine for it. This run never creates it.
 
@@ -91,12 +91,7 @@ Carry out the decisions step 1 left, touching nothing else. Depending on them, t
 
 ## 3. check code repo
 
-Read two files, and compare each against the text below, verbatim:
-
-- `.gitignore` — does it carry `/.tickets/`?
-- `AGENTS.md` — does it carry the `## About tickets repo` section?
-
-Each lands in one of three states:
+Read `.gitignore`, and compare it against the text below, verbatim: does it carry `/.tickets/`?
 
 ```
 missing    offer to add it
@@ -104,30 +99,20 @@ differs    show the difference, offer to overwrite it with the text below
 verbatim   leave it alone
 ```
 
-The `.gitignore` line is `/.tickets/`. The `AGENTS.md` section is:
+The line is `/.tickets/`.
 
-```md
-## About tickets repo
-
-Tickets live in `.tickets/` — a git repo of its own inside this working tree. A ticket change is a commit in that repo, never in this one. Nothing in this repo cites it — no comment, doc comment, test name, error message or ADR.
-
-It is a worktree of the tickets repo: teardown belongs there.
-
-`.tickets/README.md` is the rulebook for that repo — read it before touching anything there.
-```
-
-**Done when:** both files have been read, and each state has been put to the user and answered.
+**Done when:** `.gitignore` has been read, and its state has been put to the user and answered.
 
 ## 4. build code repo
 
-Write what the user agreed to write, and nothing else. Create either file when it is absent. A file the user declined keeps what it had.
+Write what the user agreed to write, and nothing else. Create `.gitignore` when it is absent. A file the user declined keeps what it had.
 
-**Done when:** every agreed entry is in place, or the user declined both and the files are untouched.
+**Done when:** the agreed entry is in place, or the user declined and `.gitignore` is untouched.
 
 ## 5. confirm
 
 Check that the setup stands, then ask to commit.
 
-`.tickets/` should be a worktree of the tickets repo sitting on `dev/<code repo>`, and both entries should be in place in the code repo. Say plainly what holds and what does not.
+`.tickets/` should be a worktree of the tickets repo sitting on `dev/<code repo>`, and `.gitignore` should carry `/.tickets/`. Say plainly what holds and what does not.
 
 Then the git this run owes: the code repo has files this run wrote — ask to commit them, and commit only on a yes. Anything left to push — a new `dev/<code repo>`, a rebased branch, commits `main` is missing from origin — is named and offered in the same pass.
