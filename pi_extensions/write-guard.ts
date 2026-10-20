@@ -1,99 +1,63 @@
+import { homedir } from "node:os";
+import { isAbsolute, relative, resolve } from "node:path";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 
-function humanSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+/** Same resolution rules pi itself applies to tool paths: `~` expansion and a leading `@`. */
+function resolveTarget(rawPath: string, cwd: string): string {
+  const withoutAtPrefix = rawPath.startsWith("@") ? rawPath.slice(1) : rawPath;
+  const expanded = withoutAtPrefix.startsWith("~")
+    ? resolve(homedir(), withoutAtPrefix.slice(1))
+    : withoutAtPrefix;
+  return resolve(cwd, expanded);
 }
 
-const RM_PATTERN = /\brm\b/;
+function isOutsideCwd(cwd: string, target: string): boolean {
+  const fromCwd = relative(cwd, target);
+  const climbsOut = fromCwd.startsWith("..");
+  const onAnotherRoot = isAbsolute(fromCwd);
+  return climbsOut || onAnotherRoot;
+}
 
-function extractRmLines(command: string): string[] {
-  return command.split("\n")
-    .filter((line) => RM_PATTERN.test(line))
-    .map((line) => line.trim());
+/** Only write and edit touch files; every other tool gets undefined. */
+function filePathOf(event: { toolName: string; input: unknown }): string | undefined {
+  const touchesFile = event.toolName === "write" || event.toolName === "edit";
+  if (!touchesFile) return undefined;
+
+  const input = event.input as { path?: string };
+  return input.path;
 }
 
 export default function (pi: ExtensionAPI) {
   let guardEnabled = true;
 
-  pi.on("session_start", async (_event, ctx) => {
+  pi.on("session_start", async () => {
     guardEnabled = true;
-    ctx.ui.setStatus("wg", "wg:on");
   });
 
   pi.on("tool_call", async (event, ctx) => {
     if (!guardEnabled) return;
     if (ctx.mode !== "tui") return;
 
-    if (event.toolName === "write") {
-      const input = event.input as { path: string; content: string };
-      const lines = input.content.split("\n").length;
-      const size = humanSize(Buffer.byteLength(input.content, "utf-8"));
-      const ok = await ctx.ui.confirm(
-        "Write Guard — write",
-        `Allow write to:\n  ${input.path}\n\nLines: ${lines}  |  Size: ${size}`,
-      );
-      if (!ok) {
-        ctx.ui.notify("Write blocked by guard", "warning");
-        ctx.abort();
-        return { block: true, reason: "Rejected by user" };
-      }
-    } else if (event.toolName === "edit") {
-      const input = event.input as {
-        path: string;
-        edits: Array<{ oldText: string; newText: string }>;
-      };
-      const editCount = input.edits.length;
-      const ok = await ctx.ui.confirm(
-        `Write Guard — edit (${editCount} edit${editCount > 1 ? "s" : ""})`,
-        `Allow edit to:\n  ${input.path}\n\nEdits: ${editCount} change${editCount > 1 ? "s" : ""}`,
-      );
-      if (!ok) {
-        ctx.ui.notify("Edit blocked by guard", "warning");
-        ctx.abort();
-        return { block: true, reason: "Rejected by user" };
-      }
-    } else if (event.toolName === "bash") {
-      const input = event.input as { command: string; timeout?: number };
-      const cmd = input.command ?? "";
-      if (!cmd) return;
+    const rawPath = filePathOf(event);
+    if (rawPath === undefined) return;
 
-      const matchLines = extractRmLines(cmd);
-      if (matchLines.length === 0) return;
+    const target = resolveTarget(rawPath, ctx.cwd);
+    if (!isOutsideCwd(ctx.cwd, target)) return;
 
-      const maxDisplay = 5;
-      const displayLines = matchLines.slice(0, maxDisplay).map((line) => {
-        if (line.length > 200) {
-          return `  > ${line.slice(0, 200)}...(truncated)`;
-        }
-        return `  > ${line}`;
-      });
+    const ok = await ctx.ui.confirm(
+      "Write Guard — outside working directory",
+      `Allow ${event.toolName} outside the working directory?\n` +
+        `  file: ${target}\n` +
+        `  cwd:  ${ctx.cwd}`,
+    );
+    if (ok) return;
 
-      let body = `Allow bash command?\n${displayLines.join("\n")}`;
-      const remaining = matchLines.length - maxDisplay;
-      if (remaining > 0) {
-        body += `\n  ... and ${remaining} more match(es)`;
-      }
-
-      const countSuffix = matchLines.length > 1 ? ` ×${matchLines.length}` : "";
-
-      const ok = await ctx.ui.confirm(
-        `Write Guard — delete (rm${countSuffix})`,
-        body,
-      );
-      if (!ok) {
-        ctx.ui.notify("Delete blocked by guard", "warning");
-        ctx.abort();
-        return { block: true, reason: "Rejected by user" };
-      }
-    }
+    ctx.ui.notify("Blocked: file is outside the working directory", "warning");
+    return { block: true, reason: "Rejected by user" };
   });
 
   function toggle(ctx: Pick<ExtensionContext, "ui">) {
     guardEnabled = !guardEnabled;
-    const status = guardEnabled ? "wg:on" : "wg:off";
-    ctx.ui.setStatus("wg", status);
     ctx.ui.notify(
       `Write guard ${guardEnabled ? "enabled" : "disabled"}`,
       "info",
@@ -103,10 +67,5 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("toggle-write-guard", {
     description: "Toggle write guard on/off",
     handler: async (_args, ctx) => toggle(ctx),
-  });
-
-  pi.registerShortcut("alt+g", {
-    description: "Toggle write guard on/off",
-    handler: async (ctx) => toggle(ctx),
   });
 }

@@ -62,7 +62,7 @@ pi is started.
 | File | Description | Entry points |
 |------|-------------|--------------|
 | `level-picker.ts` | Select the current model's thinking level in the editor slot | `alt+l`, `/level` |
-| `write-guard.ts` | Confirm `write` tool calls before execution | auto |
+| `write-guard.ts` | Confirm `write` / `edit` when the target file is outside the working directory | `/toggle-write-guard` |
 
 ### Why `alt+l` instead of `ctrl+shift+l`?
 
