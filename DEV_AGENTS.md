@@ -2,24 +2,11 @@
 
 ### Apply the `coding` skill
 
-The `coding` skill governs every code decision in this repo — an interface design, a module boundary, a naming choice, and a trade-off proposal as much as the code that lands. Read it before proposing a design and before writing or editing code, in any language or file.
+The `coding` skill governs every code decision in this repo — an interface design, a module boundary, a naming choice, and a trade-off proposal as much as the code that lands. Read it before proposing a design and before writing or editing code, in any language or file. Present an interface design as code in a fenced code block — the shape reads as code, not as prose or bullets.
 
-### Before touching files: present first, then confirm
+### Ask first, then edit
 
-Before you edit any file, present what you're about to do and **wait for the
-user's confirmation**. The form of that presentation depends on what the user
-asked:
-
-- **A question** ("what do you think?" / "why?" / any `?`): it is a request for
-  analysis and explanation, **not** a cue to edit. Give the analysis first; edit
-  only after the user confirms they want the change made.
-- **Investigating a problem** (debugging, diagnosing, exploring the codebase):
-  report your findings first; do not jump from investigation straight to editing.
-- **Implementing a feature/fix**: lay out the interface design and the shape of
-  the change first; the implementation is not underway until the design is
-  agreed.
-  - Present interface design as **code in a fenced code block** — read the
-    shape as code, not as prose or bulleted markdown.
+Default to prose: a question gets an answer. Propose before you change anything — say what you would do, then edit once the user says yes.
 
 ### Label options with ASCII
 
