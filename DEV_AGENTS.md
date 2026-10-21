@@ -25,10 +25,8 @@ asked:
 
 When listing options, alternatives, or steps in conversation, label them with ASCII — `a`, `b`, `c` or `1`, `2`, `3` — not ① ② or 甲乙丙丁.
 
-### Git staging
+### Git commits
 
-Treat the index as the user's to manage: **never stage or unstage on your own**. Both `git add` (moving work into the index) and `git reset` / `git restore --staged` (moving work back out of it) change what the user has committed there, so either one needs the user's explicit consent *before* you run it. If you believe a staging change is genuinely necessary mid-round, **ask first**; do not run it unprompted.
+Ask before every commit — one yes covers one commit, so a follow-up commit or an `--amend` needs its own. Every message follows Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, ...).
 
-### Commit messages
-
-Follow Conventional Commits format (`feat:`, `fix:`, `docs:`, `chore:`, etc.).
+Yes to a commit is yes to staging it: the user may have staged part of the change by hand, so complete the index and commit the whole of it. The index only grows — `git reset` and `git restore --staged` stay in the user's hands, even for a staged file that looks unrelated.
