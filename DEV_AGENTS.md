@@ -12,8 +12,10 @@ Default to prose: a question gets an answer. Propose before you act — sketch w
 
 When listing options, alternatives, or steps in conversation, label them with ASCII — `a`, `b`, `c` or `1`, `2`, `3` — not ① ② or 甲乙丙丁.
 
-### Git commits
+### Git
 
 Ask before every commit — one yes covers one commit, so a follow-up commit or an `--amend` needs its own. Every message follows Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, ...).
 
 Yes to a commit is yes to staging it: the user may have staged part of the change by hand, so complete the index and commit the whole of it. The index only grows — `git reset` and `git restore --staged` stay in the user's hands, even for a staged file that looks unrelated.
+
+A development branch lands on `main` through `git merge --no-ff`, so history keeps one merge commit per branch and the branch's own commits stay readable as a run behind it.
